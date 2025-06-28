@@ -9,9 +9,10 @@ const firebaseConfig = {
   messagingSenderId: "491500748346",
   appId: "1:491500748346:web:f30861d936e7fd1937bf03"
 };
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-// Handle form submission
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+// Form submission
 document.getElementById("contactForm").addEventListener("submit", function (e) {
   e.preventDefault();
 
@@ -19,20 +20,15 @@ document.getElementById("contactForm").addEventListener("submit", function (e) {
   const email = document.getElementById("email").value.trim();
   const message = document.getElementById("message").value.trim();
 
-  if (name && email && message) {
-    db.collection("contacts").add({
-      name,
-      email,
-      message,
-      timestamp: firebase.firestore.FieldValue.serverTimestamp()
-    })
-    .then(() => {
-      document.getElementById("response").textContent = "Message sent successfully!";
-      document.getElementById("contactForm").reset();
-    })
-    .catch((error) => {
-      document.getElementById("response").textContent = "Error: " + error.message;
-      console.error("Error adding document: ", error);
-    });
-  }
+  db.collection("contacts").add({
+    name,
+    email,
+    message,
+    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+  }).then(() => {
+    document.getElementById("response").innerText = "Message sent successfully!";
+    document.getElementById("contactForm").reset();
+  }).catch((error) => {
+    document.getElementById("response").innerText = "Error: " + error.message;
+  });
 });
